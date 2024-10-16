@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Engine</title>
+    <script>
+        // Function to create a rule via POST request
+        function createRule(event) {
+            event.preventDefault();
+
+            let ruleData = {
+                name: document.getElementById("ruleName").value,
+                ruleString: document.getElementById("ruleString").value
+            };
+
+            fetch('/api/rules/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(ruleData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Rule Created with ID: ' + data.id);
+                    document.getElementById("createdRuleId").value = data.id;
+                })
+                .catch(error => alert('Error creating rule: ' + error));
+        }
+
+        // Function to evaluate a rule via POST request
+        function evaluateRule(event) {
+            event.preventDefault();
+
+            let ruleId = document.getElementById("createdRuleId").value;
+            let userData = {
+                age: document.getElementById("age").value,
+                department: document.getElementById("department").value
+            };
+
+            fetch(`/api/rules/evaluate/${ruleId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+                .then(response => response.json())
+                .then(data => alert('Rule Evaluation Result: ' + data))
+                .catch(error => alert('Error evaluating rule: ' + error));
+        }
+    </script>
+</head>
+<body>
+
+<h1>Rule Engine</h1>
+
+<!-- Form for creating a rule -->
+<form id="createRuleForm" onsubmit="createRule(event)">
+    <h3>Create Rule</h3>
+    <label for="ruleName">Rule Name:</label>
+    <input type="text" id="ruleName" name="ruleName" required>
+    <br>
+    <label for="ruleString">Rule String:</label>
+    <input type="text" id="ruleString" name="ruleString" placeholder="e.g., age > 30 AND department = 'Sales'" required>
+    <br>
+    <button type="submit">Create Rule</button>
+</form>
+
+<hr>
+
+<!-- Form for evaluating a rule -->
+<form id="evaluateRuleForm" onsubmit="evaluateRule(event)">
+    <h3>Evaluate Rule</h3>
+    <input type="hidden" id="createdRuleId" name="createdRuleId">
+    <label for="age">Age:</label>
+    <input type="number" id="age" name="age" required>
+    <br>
+    <label for="department">Department:</label>
+    <input type="text" id="department" name="department" required>
+    <br>
+    <button type="submit">Evaluate Rule</button>
+</form>
+
+</body>
+</html>

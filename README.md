@@ -91,12 +91,12 @@ docker run --name postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=your-p
      Rule Name: Rule1
      Rule String:
      ```
-       ((age > 30 AND department = 'Sales') OR (age < 25 AND department = 'Marketing')) AND (salary > 50000)
+       (age < 25 AND department = 'Marketing') AND (salary > 50000 OR experience > 5)
     ```
      Evaluate Rule:
     ```
-       Age: 35
-       Department: Sales
+       Age: 19
+       Department: Marketing
        Salary: 60000
        Expected Result: true (rule is satisfied).
     ```
